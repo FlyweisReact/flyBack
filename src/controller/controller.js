@@ -1,8 +1,5 @@
 /** @format */
-
-const payment = require("../model/model");
 const nodemailer = require("nodemailer");
-// var XMLHttpRequest = require("xhr2");
 
 module.exports.addContactData = async (req, res) => {
   const { name, email, phone, subject, message } = req.body;
@@ -11,39 +8,51 @@ module.exports.addContactData = async (req, res) => {
       service: "Gmail",
       host: "smtp.gmail.com",
       port: 465,
-      secure: true,
+      secure: false,
       auth: {
         user: "info@flyweis.technology",
         pass: "ygkojtgemllsgpgs",
       },
-      "tls":{"ciphers":"SSLv3"}
     });
 
-    var mail = {
-      from: "info@flyweis.technology",
-      to: "react1@flyweis.technology",
-      // to: "info@flyweis.technology",
-      subject: `${email} want to contact you`,
-      text: `Name: ${name}, Phone: ${phone}, Subject: ${subject} , Message : ${message}`,
+    await new Promise((resolve, reject) => {
+      transporter.verify(function (error, success) {
+        if (error) {
+          console.log(error);
+          reject(error);
+        } else {
+          console.log("Server is ready to take our messages");
+          resolve(success);
+        }
+      });
+    });
+
+    const mailData = {
+      from: {
+        address: "info@flyweis.technology",
+      },
+      replyTo: "info@flyweis.technology",
+      to: "info@flyweis.technology",
+      subject: `form message`,
+      text: `Name: ${name} , Email: ${email} Phone: ${phone}, Subject: ${subject} , Message : ${message}`,
+      html: `Name: ${name} , Email: ${email} , Phone: ${phone} , Subject: ${subject} , Message : ${message}`,
     };
 
-    transporter.sendMail(mail, function (error, info) {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log("Email sent: " + info.response);
-      }
+    await new Promise((resolve, reject) => {
+      transporter.sendMail(mailData, (err, info) => {
+        if (err) {
+          console.error(err);
+          reject(err);
+        } else {
+          console.log(info);
+          resolve(info);
+        }
+      });
     });
 
-    // let xhr = new XMLHttpRequest();
-    // xhr.open("post", "/addContactData");
-    // xhr.setRequestHeader("content-type", "application/json");
-    // xhr.onload = function () {
-    //   console.log(xhr.responseText);
-    // };
-
-    return res.status(200).json({ msg: "Message send successfully" });
+    res.status(200).json({ status: "OK" });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ errors: error });
   }
 };

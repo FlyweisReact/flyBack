@@ -4,7 +4,6 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const bodyparser = require("body-parser");
-const serverless = require("serverless-http");
 const nodemailer = require("./src/route/route");
 
 
@@ -21,6 +20,4 @@ app.listen(PORT, () => {
   console.log(`listening on port `);
 });
 
-module.exports = {
-  handler: serverless(app),
-};
+

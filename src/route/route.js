@@ -1,10 +1,10 @@
-const express = require('express');
+/** @format */
+
+const express = require("express");
 const paymentRouter = express.Router();
 
-const {addContactData} = require('../controller/controller');
+const { addContactData } = require("../controller/controller");
 
+paymentRouter.post("/", addContactData);
 
-paymentRouter.post('/', addContactData);
-
-
- module.exports = paymentRouter;
+module.exports = paymentRouter;
